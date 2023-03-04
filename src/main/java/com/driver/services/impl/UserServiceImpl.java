@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public User register(String username, String password, String countryName) throws Exception{
         User user = new User();
         if(countryName.equalsIgnoreCase("IND") || countryName.equalsIgnoreCase("USA")|| countryName.equalsIgnoreCase("JPN")|| countryName.equalsIgnoreCase("AUS")|| countryName.equalsIgnoreCase("CHI")){
-            user.setUserName(username);
+            user.setUsername(username);
             user.setPassword(password);
 
             Country country = new Country(); //linking
@@ -51,11 +51,11 @@ public class UserServiceImpl implements UserService {
             }
 
             country.setUser(user); //reverse linking
-            user.setCountry(country);
+            user.setOriginalCountry(country);
             user.setConnected(false); //vpn main goal
 
             String code = country.getCode()+"."+userRepository3.save(user).getId();
-            user.setOriginalIP(code); //new
+            user.setOriginalIp(code); //new
 
             userRepository3.save(user);
 

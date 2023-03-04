@@ -2,15 +2,12 @@ package com.driver.services.impl;
 
 import com.driver.model.*;
 import com.driver.repository.ConnectionRepository;
-import com.driver.repository.CountryRepository;
 import com.driver.repository.ServiceProviderRepository;
 import com.driver.repository.UserRepository;
 import com.driver.services.ConnectionService;
-import javassist.bytecode.ExceptionsAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.monitor.CounterMonitorMBean;
 import java.util.List;
 
 @Service
@@ -26,9 +23,9 @@ public class ConnectionServiceImpl implements ConnectionService {
     public User connect(int userId, String countryName) throws Exception{
 
         User user = userRepository2.findById(userId).get();
-        if(user.getMaskedIP() != null){
+        if(user.getMaskedIp() != null){
             throw new Exception("Already connected");
-        }else if(user.getCountry().getCountryName().toString().equals(countryName)){
+        }else if(user.getOriginalCountry().getCountryName().toString().equals(countryName)){
             return user;
         }else{
             if(user.getServiceProviderList() == null){
@@ -61,7 +58,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 int givenId = serviceProvider.getId();
                 String mask = cc+"."+givenId+"."+userId;
 
-                user.setMaskedIP(mask);
+                user.setMaskedIp(mask);
                 user.setConnected(true);
                 user.getConnectionList().add(connection);
 
@@ -82,7 +79,7 @@ public class ConnectionServiceImpl implements ConnectionService {
              throw new Exception("Already disconnected");
          }
 
-         user.setMaskedIP(null);
+         user.setMaskedIp(null);
          user.setConnected(false);
          userRepository2.save(user);
 
@@ -94,11 +91,11 @@ public class ConnectionServiceImpl implements ConnectionService {
         User user = userRepository2.findById(senderId).get();
         User user1 = userRepository2.findById(receiverId).get();
 
-        if(user1.getMaskedIP()!=null){
-            String str = user1.getMaskedIP();
+        if(user1.getMaskedIp()!=null){
+            String str = user1.getMaskedIp();
             String cc = str.substring(0,3); //chopping country code = cc
 
-            if(cc.equals(user.getCountry().getCode()))
+            if(cc.equals(user.getOriginalCountry().getCode()))
                 return user;
             else {
                 String countryName = "";
@@ -124,10 +121,10 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         }
         else{
-            if(user1.getCountry().equals(user.getCountry())){
+            if(user1.getOriginalCountry().equals(user.getOriginalCountry())){
                 return user;
             }
-            String countryName = user1.getCountry().getCountryName().toString();
+            String countryName = user1.getOriginalCountry().getCountryName().toString();
             User user2 =  connect(senderId,countryName);
             if (!user2.getConnected()){
                 throw new Exception("Cannot establish communication");
