@@ -1,25 +1,20 @@
 package com.driver.model;
 
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "admins")
 public class Admin {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String username;
-
     private String password;
 
-    @OneToMany(mappedBy = "admin" , cascade = CascadeType.ALL)
-    List<ServiceProvider> serviceProviders = new ArrayList<>();
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    private List<ServiceProvider> serviceProviders;
 
     public Admin() {
     }
