@@ -22,7 +22,7 @@ public class  User {
 
     private String MaskedIp;
 
-    private boolean connected;
+    private Boolean connected;
 
 
     @ManyToMany
